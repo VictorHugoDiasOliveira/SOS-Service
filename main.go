@@ -12,15 +12,15 @@ import (
 
 var users = []models.Users{
 	{ID: 1, Email: "victorhugo@gmail.com", Password: "12345"},
-	{ID: 2, Email: "larissinha@gmail.com", Password: "qwert"},
-	{ID: 3, Email: "mamadinha@sempudor.com", Password: "brasileirinhas"},
+	{ID: 2, Email: "hugo@gmail.com", Password: "qwert"},
+	{ID: 3, Email: "vitinho@sempudor.com", Password: "brasileirinhas"},
 }
 
 func main() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost"},
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"POST", "GET"},
 		AllowHeaders:     []string{"Content-Type"},
 		ExposeHeaders:    []string{"Content-Lenght"},
@@ -33,7 +33,7 @@ func main() {
 
 	router.GET("/users", GetUsers)
 
-	router.Run("localhost:8080")
+	router.Run(":8080")
 }
 
 func Register(c *gin.Context) {
@@ -61,7 +61,7 @@ func Login(c *gin.Context) {
 				"exp":    time.Now().Add(time.Hour * 72).Unix(),
 			})
 
-			tokenString, _ := token.SignedString([]byte("secret"))
+			tokenString, _ := token.SignedString([]byte("anysecret"))
 			c.JSON(200, gin.H{
 				"token": tokenString,
 			})
