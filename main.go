@@ -9,6 +9,7 @@ func main() {
 	r := config.SetupRouter()
 
 	r = handlers.GetUsers(r)
+	r = handlers.GetUserById(r)
 	r = handlers.Register(r)
 	r = handlers.Login(r)
 

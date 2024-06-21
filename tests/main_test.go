@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -14,9 +15,9 @@ import (
 )
 
 // Test for POST /user/add
-func TestLogin(t *testing.T) {
+func TestGetUserById(t *testing.T) {
 	router := config.SetupRouter()
-	router = handlers.Login(router)
+	router = handlers.GetUserById(router)
 
 	w := httptest.NewRecorder()
 
@@ -28,10 +29,9 @@ func TestLogin(t *testing.T) {
 	}
 
 	userJson, _ := json.Marshal(exampleUser)
-	req, _ := http.NewRequest("POST", "/login", strings.NewReader(string(userJson)))
+	req, _ := http.NewRequest("GET", "/users/"+strconv.Itoa(exampleUser.ID), strings.NewReader(string(userJson)))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
-	// Compare the response body with the json data of exampleUser
 	assert.Equal(t, string(userJson), w.Body.String())
 }
