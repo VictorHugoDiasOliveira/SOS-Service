@@ -11,12 +11,12 @@ import (
 )
 
 type RegisterInput struct {
-	Email    string `json:"username" binding:"required"`
+	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 type LoginInput struct {
-	Email    string `json:"username" binding:"required"`
+	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -38,7 +38,7 @@ func Register(r *gin.Engine) *gin.Engine {
 		user := models.User{Email: input.Email, Password: string(hashedPassword)}
 
 		if err := config.DB.Create(&user).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Username already exists"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Email already exists"})
 			return
 		}
 
@@ -58,13 +58,13 @@ func Login(r *gin.Engine) *gin.Engine {
 		}
 
 		var user models.User
-		if err := config.DB.Where("username = ?", input.Email).First(&user).Error; err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
+		if err := config.DB.Where("email = ?", input.Email).First(&user).Error; err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
 			return
 		}
 
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
 			return
 		}
 
