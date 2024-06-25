@@ -1,34 +1,78 @@
 package controllers
 
-// import (
-// 	"net/http"
-// 	"strconv"
+// do not push it to production
 
-// 	"github.com/gin-gonic/gin"
-// )
+import (
+	"authservice/config"
+	"authservice/models"
+	"net/http"
 
-// func GetUsers(r *gin.Engine) *gin.Engine {
-// 	r.GET("/users", func(c *gin.Context) {
-// 		c.IndentedJSON(http.StatusOK, users)
-// 	})
+	"github.com/gin-gonic/gin"
+)
 
-// 	return r
-// }
+type UserResponse struct {
+	Id       uint   `json:"id"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
 
-// func GetUserById(r *gin.Engine) *gin.Engine {
-// 	r.GET("/users/:id", func(c *gin.Context) {
-// 		id, _ := strconv.Atoi(c.Param("id"))
+func GetUsers(r *gin.Engine) *gin.Engine {
+	r.GET("/users", func(c *gin.Context) {
+		var users []UserResponse
 
-// 		for _, user := range users {
-// 			if user.ID == id {
-// 				c.JSON(http.StatusOK, user)
-// 				return
-// 			}
-// 		}
-// 		c.JSON(200, gin.H{
-// 			"user": "not found",
-// 		})
-// 	})
+		result := config.DB.Model(models.User{}).Find(&users)
 
-// 	return r
-// }
+		if result.Error != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"Message": "Query failed",
+				"Result":  result.Error,
+			})
+			return
+		}
+		if result.RowsAffected == 0 {
+			c.JSON(http.StatusNotFound, gin.H{
+				"Message": "No records found",
+			})
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, users)
+	})
+
+	return r
+}
+
+func GetUsersById(r *gin.Engine) *gin.Engine {
+	r.GET("/users/:id", func(c *gin.Context) {
+		var user models.User
+
+		if err := c.ShouldBindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		result := config.DB.Where("id = ?", user.ID).First(&user)
+
+		if result.Error != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"Message": "Query failed",
+				"Result":  result.Error,
+			})
+			return
+		}
+		if result.RowsAffected == 0 {
+			c.JSON(http.StatusNotFound, gin.H{
+				"Message": "No records found",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"ID":       user.ID,
+			"Email":    user.Email,
+			"Password": user.Password,
+		})
+	})
+
+	return r
+}

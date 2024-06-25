@@ -27,8 +27,8 @@ func main() {
 		})
 	}
 
-	// r = controllers.GetUsers(r)
-	// r = controllers.GetUserById(r)
+	r = controllers.GetUsersById(r)
+	r = controllers.GetUsers(r)
 	r = controllers.Register(r)
 	r = controllers.Login(r)
 
