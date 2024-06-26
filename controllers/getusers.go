@@ -16,8 +16,8 @@ type UserResponse struct {
 	Password string `json:"password"`
 }
 
-func GetUsers(r *gin.Engine) *gin.Engine {
-	r.GET("/users", func(c *gin.Context) {
+func GetUsers(rg *gin.RouterGroup) {
+	rg.GET("/users", func(c *gin.Context) {
 		var users []UserResponse
 
 		result := config.DB.Model(models.User{}).Find(&users)
@@ -38,11 +38,9 @@ func GetUsers(r *gin.Engine) *gin.Engine {
 
 		c.IndentedJSON(http.StatusOK, users)
 	})
-
-	return r
 }
 
-func GetUsersById(r *gin.Engine) *gin.Engine {
+func GetUsersById(r *gin.RouterGroup) {
 	r.GET("/users/:id", func(c *gin.Context) {
 		var user models.User
 
@@ -73,6 +71,4 @@ func GetUsersById(r *gin.Engine) *gin.Engine {
 			"Password": user.Password,
 		})
 	})
-
-	return r
 }

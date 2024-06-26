@@ -3,10 +3,7 @@ package main
 import (
 	"authservice/config"
 	"authservice/controllers"
-	"authservice/middlewares"
 	"authservice/models"
-
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -16,19 +13,20 @@ func main() {
 	config.DB.AutoMigrate(&models.User{})
 
 	authorized := r.Group("/")
-	authorized.Use(middlewares.AuthMiddleware())
-	{
-		authorized.GET("/protected", func(c *gin.Context) {
-			userID := c.MustGet("userID").(uint)
-			c.JSON(200, gin.H{
-				"message": "Hello User",
-				"userID":  userID,
-			})
-		})
-	}
+	// authorized.Use(middlewares.AuthMiddleware())
+	// {
+	// 	authorized.GET("/protected", func(c *gin.Context) {
+	// 		userID := c.MustGet("userID").(uint)
+	// 		c.JSON(200, gin.H{
+	// 			"message": "Hello User",
+	// 			"userID":  userID,
+	// 		})
+	// 	})
+	// }
 
-	r = controllers.GetUsersById(r)
-	r = controllers.GetUsers(r)
+	controllers.GetUsers(authorized)
+	controllers.GetUsersById(authorized)
+
 	r = controllers.Register(r)
 	r = controllers.Login(r)
 
