@@ -14,6 +14,7 @@ type UserResponse struct {
 	Id       uint   `json:"id"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	IsAdmin  bool   `json:"isAdmin"`
 }
 
 func GetUsers(rg *gin.RouterGroup) {
@@ -42,14 +43,10 @@ func GetUsers(rg *gin.RouterGroup) {
 
 func GetUsersById(r *gin.RouterGroup) {
 	r.GET("/users/:id", func(c *gin.Context) {
+		userID := c.Param("id")
+
 		var user models.User
-
-		if err := c.ShouldBindJSON(&user); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		result := config.DB.Where("id = ?", user.ID).First(&user)
+		result := config.DB.Where("id = ?", userID).First(&user)
 
 		if result.Error != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -69,6 +66,7 @@ func GetUsersById(r *gin.RouterGroup) {
 			"ID":       user.ID,
 			"Email":    user.Email,
 			"Password": user.Password,
+			"IsAdmin":  user.IsAdmin,
 		})
 	})
 }

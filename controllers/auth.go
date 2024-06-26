@@ -35,7 +35,7 @@ func Register(r *gin.Engine) *gin.Engine {
 			return
 		}
 
-		user := models.User{Email: input.Email, Password: string(hashedPassword)}
+		user := models.User{Email: input.Email, Password: string(hashedPassword), IsAdmin: false}
 
 		if err := config.DB.Create(&user).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Email already exists"})
@@ -78,4 +78,26 @@ func Login(r *gin.Engine) *gin.Engine {
 	})
 
 	return r
+}
+
+func UpdateAdminStatus(rg *gin.RouterGroup) {
+	rg.PUT("/make-admin/:id", func(c *gin.Context) {
+		userID := c.Param("id")
+
+		// Busca o usuário no banco de dados
+		var user models.User
+		if err := config.DB.First(&user, userID).Error; err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			return
+		}
+
+		// Atualiza o campo IsAdmin para true
+		user.IsAdmin = true
+		if err := config.DB.Save(&user).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "User updated to admin successfully"})
+	})
 }
