@@ -19,8 +19,8 @@ type UserResponse struct {
 
 func GetUsers(rg *gin.RouterGroup) {
 	rg.GET("/users", func(c *gin.Context) {
-		var users []UserResponse
 
+		var users []UserResponse
 		result := config.DB.Model(models.User{}).Find(&users)
 
 		if result.Error != nil {
@@ -43,6 +43,7 @@ func GetUsers(rg *gin.RouterGroup) {
 
 func GetUsersById(r *gin.RouterGroup) {
 	r.GET("/users/:id", func(c *gin.Context) {
+
 		userID := c.Param("id")
 
 		var user models.User

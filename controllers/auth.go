@@ -10,20 +10,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RegisterInput struct {
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-type LoginInput struct {
+type Input struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 func Register(r *gin.Engine) *gin.Engine {
-	var input RegisterInput
-
 	r.POST("/register", func(c *gin.Context) {
+
+		var input Input
 		if err := c.ShouldBindJSON(&input); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -49,9 +44,9 @@ func Register(r *gin.Engine) *gin.Engine {
 }
 
 func Login(r *gin.Engine) *gin.Engine {
-	var input LoginInput
-
 	r.POST("/login", func(c *gin.Context) {
+
+		var input Input
 		if err := c.ShouldBindJSON(&input); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -81,18 +76,25 @@ func Login(r *gin.Engine) *gin.Engine {
 }
 
 func UpdateAdminStatus(rg *gin.RouterGroup) {
-	rg.PUT("/make-admin/:id", func(c *gin.Context) {
-		userID := c.Param("id")
+	rg.PUT("/make-admin", func(c *gin.Context) {
+		var userInput struct {
+			ID      uint `json:"id"`
+			IsAdmin bool `json:"isAdmin"`
+		}
 
-		// Busca o usuário no banco de dados
+		if err := c.ShouldBind(&userInput); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 		var user models.User
-		if err := config.DB.First(&user, userID).Error; err != nil {
+		if err := config.DB.First(&user, userInput.ID).Error; err != nil {
 			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 			return
 		}
 
-		// Atualiza o campo IsAdmin para true
-		user.IsAdmin = true
+		user.IsAdmin = userInput.IsAdmin
+
 		if err := config.DB.Save(&user).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user"})
 			return
