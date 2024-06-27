@@ -1,5 +1,5 @@
-# Auth Service
+# SOS Service
 
-## To do
+Back-end for SOS Website (Studing purpose).
 
-- Add postgreSQL
+- Underdevelopment
