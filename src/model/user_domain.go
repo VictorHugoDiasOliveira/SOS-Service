@@ -3,32 +3,37 @@ package model
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"sosservice/src/configurations/rest_err"
 )
+
+type UserDomainInterface interface {
+	GetEmail() string
+	GetPassword() string
+	HashPassword()
+}
 
 func NewUserDomain(
 	email, password string,
 ) UserDomainInterface {
-	return &UserDomain{
+	return &userDomain{
 		email, password,
 	}
 }
 
-type UserDomain struct {
-	Email    string
-	Password string
+type userDomain struct {
+	email    string
+	password string
 }
 
-func (ud *UserDomain) HashPassword() {
+func (ud *userDomain) GetEmail() string {
+	return ud.email
+}
+func (ud *userDomain) GetPassword() string {
+	return ud.password
+}
+
+func (ud *userDomain) HashPassword() {
 	hash := md5.New()
 	defer hash.Reset()
-	hash.Write([]byte(ud.Password))
-	ud.Password = hex.EncodeToString(hash.Sum(nil))
-}
-
-type UserDomainInterface interface {
-	CreateUser() *rest_err.RestErr
-	UpdateUser(string) *rest_err.RestErr
-	FindUser(string) (*UserDomain, *rest_err.RestErr)
-	DeleteUser(string) *rest_err.RestErr
+	hash.Write([]byte(ud.password))
+	ud.password = hex.EncodeToString(hash.Sum(nil))
 }

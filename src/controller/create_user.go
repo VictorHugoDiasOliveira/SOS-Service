@@ -5,6 +5,7 @@ import (
 	"sosservice/src/configurations/logger"
 	"sosservice/src/configurations/validation"
 	"sosservice/src/model"
+	"sosservice/src/model/service"
 
 	"sosservice/src/controller/model/request"
 
@@ -35,7 +36,9 @@ func CreateUser(context *gin.Context) {
 
 	domain := model.NewUserDomain(userRequest.Email, userRequest.Password)
 
-	if err := domain.CreateUser(); err != nil {
+	service := service.NewUserDomainService()
+
+	if err := service.CreateUser(domain); err != nil {
 		context.JSON(err.Code, err)
 		return
 	}
