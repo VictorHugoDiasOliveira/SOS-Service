@@ -3,12 +3,14 @@ package main
 import (
 	"log"
 	"sosservice/configurations"
+	"sosservice/configurations/logger"
 	"sosservice/controller/routes"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
+	logger.Info("Starting application")
 
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal(err)

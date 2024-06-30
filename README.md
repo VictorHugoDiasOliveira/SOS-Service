@@ -12,3 +12,4 @@ This project has:
 - Postgres
 - Docker
 - Play Ground Validation
+- Zap logger (uber library)
