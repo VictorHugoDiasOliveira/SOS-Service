@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"os"
 	"sosservice/src/configurations"
+	"sosservice/src/configurations/database/postgres"
 	"sosservice/src/configurations/logger"
 	"sosservice/src/controller"
 	"sosservice/src/controller/routes"
@@ -18,23 +20,23 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// init dependencies
-	service := service.NewUserDomainService()
-	userController := controller.NewUserControllerInterface(service)
-
-	// config := &storage.Config{
-	// 	Host:     os.Getenv("DB_HOST"),
-	// 	User:     os.Getenv("DB_USER"),
-	// 	Password: os.Getenv("DB_PASSWORD"),
-	// 	DBName:   os.Getenv("DB_NAME"),
-	// 	Port:     os.Getenv("DB_PORT"),
-	// 	SSLMode:  os.Getenv("DB_SSLMode"),
-	// }
-	// storage.ConnectDatabase(config)
+	config := &postgres.Config{
+		Host:     os.Getenv("DB_HOST"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		DBName:   os.Getenv("DB_NAME"),
+		Port:     os.Getenv("DB_PORT"),
+		SSLMode:  os.Getenv("DB_SSLMODE"),
+	}
+	postgres.InitDatabase(config)
 
 	// models.MigrateUsers(storage.DB)
 	// models.MigrateCauses(storage.DB)
 	// models.MigrateUserInfos(storage.DB)
+
+	// init dependencies
+	service := service.NewUserDomainService()
+	userController := controller.NewUserControllerInterface(service)
 
 	router := configurations.SetupRouter()
 
@@ -43,24 +45,4 @@ func main() {
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}
-
-	// authorized := r.Group("/")
-	// authorized.Use(middlewares.AuthenticationMiddleware())
-
-	// // Get Users
-	// controller.GetUsers(authorized)
-	// controller.GetUsersById(authorized)
-
-	// // Auth
-	// controllers.UpdateAdminStatus(authorized)
-	// r = controllers.Register(r)
-	// r = controllers.Login(r)
-
-	// // Causes
-	// controllers.RegisterCause(authorized)
-	// controllers.GetCauses(authorized)
-
-	// // UserInfo
-	// controllers.RegisterInfo(authorized)
-
 }
