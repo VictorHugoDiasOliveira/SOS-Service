@@ -4,43 +4,45 @@ import (
 	"net/http"
 	"sosservice/src/configurations/logger"
 	"sosservice/src/configurations/validation"
-	"sosservice/src/controller/request"
-	"sosservice/src/controller/response"
+	"sosservice/src/model"
+
+	"sosservice/src/controller/model/request"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
+var (
+	UserDomainInterface model.UserDomainInterface
+)
+
 func CreateUser(context *gin.Context) {
 
 	logger.Info("Init CreatUser Controller",
-		zap.String("key", "journey"),
-		zap.String("string", "createUser"),
+		zap.String("journey", "createUser"),
 	)
 
 	var userRequest request.UserRequest
 
 	if err := context.ShouldBindJSON(&userRequest); err != nil {
 		logger.Error("Error trying to bind user info", err,
-			zap.String("key", "journey"),
-			zap.String("string", "createUser"),
+			zap.String("journey", "createUser"),
 		)
 		restErr := validation.ValidateUserError(err)
 		context.JSON(restErr.Code, restErr)
 		return
 	}
 
-	// Add to database
+	domain := model.NewUserDomain(userRequest.Email, userRequest.Password)
 
-	logger.Info("User created successfully",
-		zap.String("key", "journey"),
-		zap.String("string", "createUser"),
-	)
-
-	response := response.UserResponse{
-		ID:    1,
-		Email: userRequest.Email,
+	if err := domain.CreateUser(); err != nil {
+		context.JSON(err.Code, err)
+		return
 	}
 
-	context.JSON(http.StatusOK, response)
+	logger.Info("User created successfully",
+		zap.String("journey", "createUser"),
+	)
+
+	context.String(http.StatusOK, "")
 }
