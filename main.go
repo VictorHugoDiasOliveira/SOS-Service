@@ -1,33 +1,58 @@
 package main
 
 import (
-	"authservice/config"
-	"authservice/controllers"
-	"authservice/middlewares"
-	"authservice/models"
+	"log"
+	"sosservice/configurations"
+	"sosservice/controller/routes"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	r := config.SetupRouter()
 
-	config.ConnectDatabase()
-	config.DB.AutoMigrate(&models.User{}, &models.Cause{})
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal(err)
+	}
 
-	authorized := r.Group("/")
-	authorized.Use(middlewares.AuthenticationMiddleware())
+	// config := &storage.Config{
+	// 	Host:     os.Getenv("DB_HOST"),
+	// 	User:     os.Getenv("DB_USER"),
+	// 	Password: os.Getenv("DB_PASSWORD"),
+	// 	DBName:   os.Getenv("DB_NAME"),
+	// 	Port:     os.Getenv("DB_PORT"),
+	// 	SSLMode:  os.Getenv("DB_SSLMode"),
+	// }
+	// storage.ConnectDatabase(config)
 
-	// Get Users
-	controllers.GetUsers(authorized)
-	controllers.GetUsersById(authorized)
+	// models.MigrateUsers(storage.DB)
+	// models.MigrateCauses(storage.DB)
+	// models.MigrateUserInfos(storage.DB)
 
-	// Auth
-	controllers.UpdateAdminStatus(authorized)
-	r = controllers.Register(r)
-	r = controllers.Login(r)
+	router := configurations.SetupRouter()
 
-	// Causes
-	controllers.RegisterCause(authorized)
-	controllers.GetCauses(authorized)
+	routes.InitializeRoutes(&router.RouterGroup)
 
-	r.Run(":8080")
+	if err := router.Run(":8080"); err != nil {
+		log.Fatal(err)
+	}
+
+	// authorized := r.Group("/")
+	// authorized.Use(middlewares.AuthenticationMiddleware())
+
+	// // Get Users
+	// controller.GetUsers(authorized)
+	// controller.GetUsersById(authorized)
+
+	// // Auth
+	// controllers.UpdateAdminStatus(authorized)
+	// r = controllers.Register(r)
+	// r = controllers.Login(r)
+
+	// // Causes
+	// controllers.RegisterCause(authorized)
+	// controllers.GetCauses(authorized)
+
+	// // UserInfo
+	// controllers.RegisterInfo(authorized)
+
 }

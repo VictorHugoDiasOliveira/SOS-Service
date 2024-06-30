@@ -1,0 +1,9 @@
+	Id      uint   `gorm:"primary key" json:"id"`
+	Email    string `gorm:"unique;not null;size:100" json:"email"`
+	Password string `gorm:"not null" json:"password"`
+	IsAdmin  bool   `gorm:"default:false" json:"isAdmin"`
+
+	func MigrateUsers(db *gorm.DB) error {
+		err := db.AutoMigrate(&UserRequest{})
+		return err
+	}

@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:13
     environment:
-      POSTGRES_DB: authservice
+      POSTGRES_DB: sosservice
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: error404
     ports:
@@ -22,7 +22,7 @@ services:
       DB_HOST: db
       DB_USER: postgres
       DB_PASSWORD: error404
-      DB_NAME: authservice
+      DB_NAME: sosservice
 
 volumes:
   postgres_data:

@@ -1,4 +1,4 @@
-package config
+package configurations
 
 import (
 	"time"
@@ -8,16 +8,16 @@ import (
 )
 
 func SetupRouter() *gin.Engine {
-	r := gin.Default()
+	router := gin.Default()
 
-	r.Use(cors.New(cors.Config{
+	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"POST", "GET"},
+		AllowMethods:     []string{"POST", "GET", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Content-Type"},
 		ExposeHeaders:    []string{"Content-Lenght"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
 
-	return r
+	return router
 }
