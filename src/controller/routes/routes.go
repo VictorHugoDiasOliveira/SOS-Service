@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"sosservice/controller"
+	"sosservice/src/controller"
 
 	"github.com/gin-gonic/gin"
 )

@@ -3,7 +3,7 @@ package validation
 import (
 	"encoding/json"
 	"errors"
-	"sosservice/configurations/rest_err"
+	"sosservice/src/configurations/rest_err"
 
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/locales/en"

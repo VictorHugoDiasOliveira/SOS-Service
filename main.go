@@ -2,9 +2,9 @@ package main
 
 import (
 	"log"
-	"sosservice/configurations"
-	"sosservice/configurations/logger"
-	"sosservice/controller/routes"
+	"sosservice/src/configurations"
+	"sosservice/src/configurations/logger"
+	"sosservice/src/controller/routes"
 
 	"github.com/joho/godotenv"
 )

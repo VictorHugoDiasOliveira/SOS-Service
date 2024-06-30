@@ -33,12 +33,12 @@ func init() {
 	log, _ = logConfig.Build()
 }
 
-func Info(message string, tags ...zap.Field) {
+func Info(message string, tags ...zapcore.Field) {
 	log.Info(message, tags...)
 	log.Sync()
 }
 
-func Error(message string, err error, tags ...zap.Field) {
+func Error(message string, err error, tags ...zapcore.Field) {
 	tags = append(tags, zap.NamedError("error", err))
 	log.Info(message, tags...)
 	log.Sync()
