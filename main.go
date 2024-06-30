@@ -4,7 +4,9 @@ import (
 	"log"
 	"sosservice/src/configurations"
 	"sosservice/src/configurations/logger"
+	"sosservice/src/controller"
 	"sosservice/src/controller/routes"
+	"sosservice/src/model/service"
 
 	"github.com/joho/godotenv"
 )
@@ -15,6 +17,10 @@ func main() {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal(err)
 	}
+
+	// init dependencies
+	service := service.NewUserDomainService()
+	userController := controller.NewUserControllerInterface(service)
 
 	// config := &storage.Config{
 	// 	Host:     os.Getenv("DB_HOST"),
@@ -32,7 +38,7 @@ func main() {
 
 	router := configurations.SetupRouter()
 
-	routes.InitializeRoutes(&router.RouterGroup)
+	routes.InitializeRoutes(&router.RouterGroup, userController)
 
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
