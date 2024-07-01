@@ -6,6 +6,9 @@ import (
 	"sosservice/src/configurations/logger"
 	"sosservice/src/configurations/rest_err"
 	"sosservice/src/model"
+	"sosservice/src/model/repository/entity/converter"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const (
@@ -18,17 +21,14 @@ func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (mode
 	collection_name := os.Getenv(MONGODB_USER_COLLECTION)
 	collection := ur.databaseConnection.Collection(collection_name)
 
-	value, err := userDomain.GetJSONValue()
-	if err != nil {
-		return nil, rest_err.NewInternalServerError(err.Error())
-	}
+	value := converter.ConvertDomainToEntity(userDomain)
 
 	result, err := collection.InsertOne(context.Background(), value)
 	if err != nil {
 		return nil, rest_err.NewInternalServerError(err.Error())
 	}
 
-	userDomain.SetID(result.InsertedID.(string))
+	value.ID = result.InsertedID.(primitive.ObjectID)
 
-	return userDomain, nil
+	return converter.ConvertEntityToDomain(*value), nil
 }

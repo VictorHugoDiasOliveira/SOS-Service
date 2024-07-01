@@ -1,12 +1,12 @@
 package main
 
 import (
+	"context"
 	"log"
 	"sosservice/src/configurations"
+	"sosservice/src/configurations/database/mongodb"
 	"sosservice/src/configurations/logger"
-	"sosservice/src/controller"
 	"sosservice/src/controller/routes"
-	"sosservice/src/model/service"
 
 	"github.com/joho/godotenv"
 )
@@ -18,9 +18,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// init dependencies
-	service := service.NewUserDomainService()
-	userController := controller.NewUserControllerInterface(service)
+	database, err := mongodb.NewMongoDBConnection(context.Background())
+	if err != nil {
+		log.Fatalf("error trying to connect to database, error=%s \n", err.Error())
+	}
+
+	userController := initDependencies(database)
 
 	router := configurations.SetupRouter()
 
