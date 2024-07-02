@@ -5,6 +5,6 @@ import (
 	"sosservice/src/model"
 )
 
-func (*userDomainService) UpdateUser(userId string, userDomain model.UserDomainInterface) *rest_err.RestErr {
+func (*userDomainService) UpdateUserService(userId string, userDomain model.UserDomainInterface) *rest_err.RestErr {
 	return nil
 }
