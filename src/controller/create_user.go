@@ -17,7 +17,7 @@ var (
 	UserDomainInterface model.UserDomainInterface
 )
 
-func (uc userControllerInterface) CreateUser(context *gin.Context) {
+func (uc *userControllerInterface) CreateUser(context *gin.Context) {
 
 	logger.Info("Init CreatUser Controller",
 		zap.String("journey", "createUser"),

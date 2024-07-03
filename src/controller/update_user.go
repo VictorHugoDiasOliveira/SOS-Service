@@ -19,6 +19,14 @@ func (uc *userControllerInterface) UpdateUser(context *gin.Context) {
 		zap.String("journey", "UpdateUser"),
 	)
 
+	userId := context.Param("id")
+	_, err := primitive.ObjectIDFromHex(userId)
+	if err != nil {
+		errRest := rest_err.NewBadRequestError("Invalid User Id, must be a hex value")
+		context.JSON(errRest.Code, errRest)
+		return
+	}
+
 	var userRequest request.UserUpdateRequest
 
 	if err := context.ShouldBindJSON(&userRequest); err != nil {
@@ -27,14 +35,6 @@ func (uc *userControllerInterface) UpdateUser(context *gin.Context) {
 		)
 		restErr := validation.ValidateUserError(err)
 		context.JSON(restErr.Code, restErr)
-		return
-	}
-
-	userId := context.Param("id")
-	_, err := primitive.ObjectIDFromHex(userId)
-	if err != nil {
-		errRest := rest_err.NewBadRequestError("Invalid User Id, must be a hex value")
-		context.JSON(errRest.Code, errRest)
 		return
 	}
 

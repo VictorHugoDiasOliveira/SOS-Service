@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (uc userControllerInterface) FindUserById(context *gin.Context) {
+func (uc *userControllerInterface) FindUserById(context *gin.Context) {
 	logger.Info("Starting FindUserById Controller", zap.String("journey", "FindUserById"))
 
 	userId := context.Param("id")

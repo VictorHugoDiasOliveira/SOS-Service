@@ -1,7 +1,21 @@
 package service
 
-import "sosservice/src/configurations/rest_err"
+import (
+	"sosservice/src/configurations/logger"
+	"sosservice/src/configurations/rest_err"
 
-func (ud *userDomainService) DeleteUserService(string) *rest_err.RestErr {
+	"go.uber.org/zap"
+)
+
+func (ud *userDomainService) DeleteUserService(userId string) *rest_err.RestErr {
+	logger.Info("Init DeleteUserService model",
+		zap.String("journey", "DeleteUserService"),
+	)
+
+	err := ud.userRepository.DeleteUser(userId)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
