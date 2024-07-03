@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"os"
-	"sosservice/src/configurations/logger"
 	"sosservice/src/configurations/rest_err"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,8 +10,6 @@ import (
 )
 
 func (ur *userRepository) DeleteUser(userId string) *rest_err.RestErr {
-	logger.Info("Init UpdateUser Repository")
-
 	collection_name := os.Getenv(MONGODB_USER_COLLECTION)
 	collection := ur.databaseConnection.Collection(collection_name)
 

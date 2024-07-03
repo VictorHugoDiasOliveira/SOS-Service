@@ -5,15 +5,12 @@ import (
 	"log"
 	"sosservice/src/configurations"
 	"sosservice/src/configurations/database/mongodb"
-	"sosservice/src/configurations/logger"
 	"sosservice/src/controller/routes"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	logger.Info("Starting Application")
-
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal(err)
 	}

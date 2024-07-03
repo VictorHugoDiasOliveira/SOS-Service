@@ -3,11 +3,9 @@ package mongodb
 import (
 	"context"
 	"os"
-	"sosservice/src/configurations/logger"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.uber.org/zap"
 )
 
 var (
@@ -16,10 +14,6 @@ var (
 )
 
 func NewMongoDBConnection(ctx context.Context) (*mongo.Database, error) {
-	logger.Info("Starting Connection",
-		zap.String("journey", "NewMongoDBConnection"),
-	)
-
 	mongodb_uri := os.Getenv(MONGODB_URL)
 	mongodb_database := os.Getenv(MONGODB_DATABASE)
 

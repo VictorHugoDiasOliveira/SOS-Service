@@ -1,18 +1,15 @@
 package service
 
 import (
-	"sosservice/src/configurations/logger"
 	"sosservice/src/configurations/rest_err"
 	"sosservice/src/model"
-
-	"go.uber.org/zap"
 )
 
 func (ud *userDomainService) CreateUserService(userDomain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr) {
-
-	logger.Info("Init createUser model",
-		zap.String("journey", "createUser"),
-	)
+	if user, _ := ud.FindUserByEmailService(userDomain.GetEmail()); user != nil {
+		err := rest_err.NewBadRequestError("This email is already used")
+		return nil, err
+	}
 
 	userDomain.HashPassword()
 

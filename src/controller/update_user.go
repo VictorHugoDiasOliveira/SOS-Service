@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"sosservice/src/configurations/logger"
 	"sosservice/src/configurations/rest_err"
 	"sosservice/src/configurations/validation"
 	"sosservice/src/controller/model/request"
@@ -10,15 +9,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.uber.org/zap"
 )
 
 func (uc *userControllerInterface) UpdateUser(context *gin.Context) {
-
-	logger.Info("Init UpdateUser Controller",
-		zap.String("journey", "UpdateUser"),
-	)
-
 	userId := context.Param("id")
 	_, err := primitive.ObjectIDFromHex(userId)
 	if err != nil {
@@ -30,9 +23,6 @@ func (uc *userControllerInterface) UpdateUser(context *gin.Context) {
 	var userRequest request.UserUpdateRequest
 
 	if err := context.ShouldBindJSON(&userRequest); err != nil {
-		logger.Error("Error trying to bind user info", err,
-			zap.String("journey", "UpdateUser"),
-		)
 		restErr := validation.ValidateUserError(err)
 		context.JSON(restErr.Code, restErr)
 		return
@@ -43,10 +33,5 @@ func (uc *userControllerInterface) UpdateUser(context *gin.Context) {
 		context.JSON(err.Code, err)
 		return
 	}
-
-	logger.Info("User Updated successfully",
-		zap.String("journey", "UpdateUser"),
-	)
-
 	context.Status(http.StatusOK)
 }

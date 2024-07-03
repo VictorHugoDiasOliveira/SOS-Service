@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"os"
-	"sosservice/src/configurations/logger"
 	"sosservice/src/configurations/rest_err"
 	"sosservice/src/model"
 	"sosservice/src/model/repository/entity/converter"
@@ -12,8 +11,6 @@ import (
 )
 
 func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr) {
-	logger.Info("Init CreateUser Repository")
-
 	collection_name := os.Getenv(MONGODB_USER_COLLECTION)
 	collection := ur.databaseConnection.Collection(collection_name)
 
