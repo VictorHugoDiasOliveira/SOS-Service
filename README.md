@@ -9,7 +9,7 @@ This project has:
 - Golang
 - Gin Gonic
 - JWT
-- Postgres
+- MongoDB
 - Docker
 - Play Ground Validation
 - Zap logger (uber library)
