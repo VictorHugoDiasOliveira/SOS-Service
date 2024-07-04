@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"sosservice/src/configurations/rest_err"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -33,4 +34,38 @@ func (ud *userDomain) GenerateToken() (string, *rest_err.RestErr) {
 	}
 
 	return tokenString, nil
+}
+
+func ValidateToken(tokenValue string) (UserDomainInterface, *rest_err.RestErr) {
+	secret := os.Getenv(JWT_KEY)
+
+	token, err := jwt.Parse(RemoveBearerPrefix(tokenValue), func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); ok {
+			return []byte(secret), nil
+		}
+
+		return nil, rest_err.NewBadRequestError("Invalid Token")
+	})
+	if err != nil {
+		return nil, rest_err.NewUnauthorizedRequestError("Invalid Token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		return nil, rest_err.NewUnauthorizedRequestError("Invalid Token")
+	}
+
+	return &userDomain{
+		id:    claims["id"].(string),
+		email: claims["email"].(string),
+		name:  claims["name"].(string),
+		age:   int(claims["age"].(float64)),
+	}, nil
+}
+
+func RemoveBearerPrefix(token string) string {
+	if strings.HasPrefix(token, "Bearer ") {
+		token = strings.TrimPrefix("Bearer ", token)
+	}
+	return token
 }
