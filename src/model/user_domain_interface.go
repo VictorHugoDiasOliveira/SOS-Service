@@ -1,5 +1,7 @@
 package model
 
+import "sosservice/src/configurations/rest_err"
+
 type UserDomainInterface interface {
 	GetEmail() string
 	GetPassword() string
@@ -9,6 +11,8 @@ type UserDomainInterface interface {
 
 	SetID(string)
 	GetID() string
+
+	GenerateToken() (string, *rest_err.RestErr)
 }
 
 func NewUserDomain(email string, password string, name string, age int) UserDomainInterface {

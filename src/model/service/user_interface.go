@@ -23,5 +23,5 @@ type UserDomainService interface {
 	FindUserByEmailService(email string) (model.UserDomainInterface, *rest_err.RestErr)
 	DeleteUserService(string) *rest_err.RestErr
 
-	LoginUserService(userDomain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr)
+	LoginUserService(userDomain model.UserDomainInterface) (model.UserDomainInterface, string, *rest_err.RestErr)
 }

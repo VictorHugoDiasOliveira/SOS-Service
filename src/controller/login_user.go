@@ -21,11 +21,13 @@ func (uc *userControllerInterface) LoginUser(context *gin.Context) {
 
 	domain := model.NewUserLoginDomain(userRequest.Email, userRequest.Password)
 
-	domainResult, err := uc.service.LoginUserService(domain)
+	domainResult, token, err := uc.service.LoginUserService(domain)
 	if err != nil {
 		context.JSON(err.Code, err)
 		return
 	}
+
+	context.Header("Authorization", token)
 
 	context.JSON(http.StatusOK, view.ConvertDomainToResponse(domainResult))
 }

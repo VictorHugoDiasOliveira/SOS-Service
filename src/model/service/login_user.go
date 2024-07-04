@@ -5,14 +5,19 @@ import (
 	"sosservice/src/model"
 )
 
-func (ud *userDomainService) LoginUserService(userDomain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr) {
+func (ud *userDomainService) LoginUserService(userDomain model.UserDomainInterface) (model.UserDomainInterface, string, *rest_err.RestErr) {
 
 	userDomain.HashPassword()
 
 	user, err := ud.FindUserByEmailAndPasswordService(userDomain.GetEmail(), userDomain.GetPassword())
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	return user, nil
+	token, err := user.GenerateToken()
+	if err != nil {
+		return nil, "", err
+	}
+
+	return user, token, nil
 }
