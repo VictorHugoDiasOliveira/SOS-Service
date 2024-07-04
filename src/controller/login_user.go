@@ -28,6 +28,5 @@ func (uc *userControllerInterface) LoginUser(context *gin.Context) {
 	}
 
 	context.Header("Authorization", token)
-
 	context.JSON(http.StatusOK, view.ConvertDomainToResponse(domainResult))
 }
