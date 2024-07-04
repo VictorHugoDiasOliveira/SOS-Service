@@ -15,13 +15,17 @@ func TestCreateUserRepository(t *testing.T) {
 	database_name := "user_database_test"
 	collection_name := "user_collection_test"
 
-	os.Setenv("MONGODB_USER_COLLECTION", collection_name)
+	err := os.Setenv("MONGODB_USER_COLLECTION", collection_name)
+	if err != nil {
+		t.FailNow()
+		return
+	}
 	defer os.Clearenv()
 
 	mtestDb := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	// defer mtestDb.Close()
 
-	mtestDb.Run("valid domain", func(mt *mtest.T) {
+	mtestDb.Run("create user success", func(mt *mtest.T) {
 		mt.AddMockResponses(bson.D{
 			{Key: "ok", Value: 1},
 			{Key: "n", Value: 1},

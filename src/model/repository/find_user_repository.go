@@ -54,7 +54,7 @@ func (ur *userRepository) FindUserById(id string) (model.UserDomainInterface, *r
 			return nil, rest_err.NewNotFoundError(errorMessage)
 		}
 
-		errorMessage := "Error trying to find user by email"
+		errorMessage := "Error trying to find user by id"
 		return nil, rest_err.NewInternalServerError(errorMessage)
 	}
 	return converter.ConvertEntityToDomain(*userEntity), nil
