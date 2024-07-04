@@ -27,4 +27,6 @@ type UserRepository interface {
 	FindUserByEmail(email string) (model.UserDomainInterface, *rest_err.RestErr)
 	FindUserById(id string) (model.UserDomainInterface, *rest_err.RestErr)
 	DeleteUser(id string) *rest_err.RestErr
+
+	FindUserByEmailAndPassword(email string, password string) (model.UserDomainInterface, *rest_err.RestErr)
 }
