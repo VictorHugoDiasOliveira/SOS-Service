@@ -16,7 +16,7 @@ func InitializeRoutes(rg *gin.RouterGroup, userController controller.UserControl
 	rg.GET("/getUserByEmail/:email", model.ValidateTokenMiddleware, userController.FindUserByEmail)
 	rg.POST("/createUser", userController.CreateUser)
 	rg.PUT("/updateUser/:id", userController.UpdateUser)
-	rg.DELETE("/deleteUser/:id", userController.DeleteUser)
+	rg.DELETE("/deleteUser/:id", model.ValidateTokenMiddleware, userController.DeleteUser)
 
 	rg.POST("/login", userController.LoginUser)
 
