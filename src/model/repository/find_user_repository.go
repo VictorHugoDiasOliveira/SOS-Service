@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"sosservice/src/configurations/logger"
 	"sosservice/src/configurations/rest_err"
 	"sosservice/src/model"
 	"sosservice/src/model/repository/entity"
@@ -12,9 +13,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.uber.org/zap"
 )
 
 func (ur *userRepository) FindUserByEmail(email string) (model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Finding User By Email", zap.String("journey", "FindUserByEmail"))
 	collection_name := os.Getenv(MONGODB_USER_COLLECTION)
 	collection := ur.databaseConnection.Collection(collection_name)
 
@@ -23,16 +26,16 @@ func (ur *userRepository) FindUserByEmail(email string) (model.UserDomainInterfa
 	filter := bson.D{{Key: "email", Value: email}}
 
 	err := collection.FindOne(context.Background(), filter).Decode(userEntity)
-
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			errorMessage := fmt.Sprintf("User not found: %s", email)
 			return nil, rest_err.NewNotFoundError(errorMessage)
 		}
-
+		logger.Error("Error trying to find user by email", err, zap.String("journey", "FindUserByEmail"))
 		errorMessage := "Error trying to find user by email"
 		return nil, rest_err.NewInternalServerError(errorMessage)
 	}
+	logger.Info("User Found By Email", zap.String("journey", "FindUserByEmail"))
 	return converter.ConvertEntityToDomain(*userEntity), nil
 }
 

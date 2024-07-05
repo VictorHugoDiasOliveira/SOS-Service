@@ -1,13 +1,16 @@
 package routes
 
 import (
+	"sosservice/src/configurations/logger"
 	"sosservice/src/controller"
 	"sosservice/src/model"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func InitializeRoutes(rg *gin.RouterGroup, userController controller.UserControllerInterface) {
+	logger.Info("Starting Routes", zap.String("journey", "InitializeRoutes"))
 
 	rg.GET("/getUserById/:id", model.ValidateTokenMiddleware, userController.FindUserById)
 	rg.GET("/getUserByEmail/:email", model.ValidateTokenMiddleware, userController.FindUserByEmail)
@@ -16,4 +19,6 @@ func InitializeRoutes(rg *gin.RouterGroup, userController controller.UserControl
 	rg.DELETE("/deleteUser/:id", userController.DeleteUser)
 
 	rg.POST("/login", userController.LoginUser)
+
+	logger.Info("Routes Started Successfully", zap.String("journey", "InitializeRoutes"))
 }

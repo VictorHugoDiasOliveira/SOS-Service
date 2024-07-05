@@ -1,13 +1,16 @@
 package configurations
 
 import (
+	"sosservice/src/configurations/logger"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func SetupRouter() *gin.Engine {
+	logger.Info("Starting Router", zap.String("journey", "SetupRouter"))
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
@@ -19,5 +22,6 @@ func SetupRouter() *gin.Engine {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	logger.Info("Router Started Successfully", zap.String("journey", "SetupRouter"))
 	return router
 }
