@@ -12,4 +12,5 @@ This project has:
 - MongoDB
 - Docker
 - Play Ground Validation
-- Zap logger (uber library)
+- Zap logger (uber library for loggers)
+- Swagger for docs ([swag](https://github.com/swaggo/swag))

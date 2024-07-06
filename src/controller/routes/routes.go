@@ -6,6 +6,8 @@ import (
 	"sosservice/src/model"
 
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 )
 
@@ -19,6 +21,8 @@ func InitializeRoutes(rg *gin.RouterGroup, userController controller.UserControl
 	rg.DELETE("/deleteUser/:id", model.ValidateTokenMiddleware, userController.DeleteUser)
 
 	rg.POST("/login", userController.LoginUser)
+
+	rg.GET("swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	logger.Info("Routes Started Successfully", zap.String("journey", "InitializeRoutes"))
 }

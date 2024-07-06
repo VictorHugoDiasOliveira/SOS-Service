@@ -10,6 +10,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// LoginUser allows a user to log and obtain an authentication token
+// @Summary User Login
+// @Description Allows a user to log in and receive and authentication token
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param userLogin body request.UserLogin true "User login credentials"
+// @Success 200 {object} response.UserResponse "Login successfully, authentication token provided"
+// @Header 200 {string} Authorization "Authentication token"
+// @Failure 403 {object} rest_err.RestErr "Error: invalid login credentials"
+// @Router /login [post]
 func (uc *userControllerInterface) LoginUser(context *gin.Context) {
 	var userRequest request.UserLogin
 

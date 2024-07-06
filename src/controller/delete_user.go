@@ -8,6 +8,18 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// DeleteUser deletes a user using id
+// @Summary Delete User
+// @Description Deletes a user based on the ID
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "ID of the user to be deleted"
+// @Success 200
+// @Param Authorization header string true "Insert your access token" default(Bearer <token>)
+// @Failure 400 {object} rest_err.RestErr
+// @Failure 500 {object} rest_err.RestErr
+// @Router /deleteUser/{id} [delete]
 func (uc *userControllerInterface) DeleteUser(context *gin.Context) {
 
 	userId := context.Param("id")

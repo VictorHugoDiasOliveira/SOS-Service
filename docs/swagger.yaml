@@ -1,0 +1,340 @@
+basePath: /
+definitions:
+  request.UserLogin:
+    description: Structure containing the necessary fields for user login
+    properties:
+      email:
+        description: User's email (required and must be a valid email address)
+        example: email@gmail.com
+        type: string
+      password:
+        description: User's password (required and must be between 5 and 50 characters)
+        example: senha1234
+        maxLength: 50
+        minLength: 5
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  request.UserRequest:
+    description: Structure containing the required fields for creating a new user
+    properties:
+      age:
+        description: |-
+          User's age (required, minimum of 18)
+          @json
+          @jsonTag age
+          @jsonExample 22
+          @binding required,min=5
+        example: 22
+        minimum: 18
+        type: integer
+      email:
+        description: |-
+          User's email (required, email)
+          @json
+          @jsonTag email
+          @jsonExample email@gmail.com
+          @binding required,email
+        example: email@gmail.com
+        type: string
+      name:
+        description: |-
+          User's name (required, minimum of 5 characters, maximum of 50 characters)
+          Example: Victor Hugo
+          @json
+          @jsonTag name
+          @jsonExample Victor Hugo
+          @binding required,min=5,max=50
+        example: Victor Hugo
+        maxLength: 50
+        minLength: 5
+        type: string
+      password:
+        description: |-
+          User's password (required, minimum of 5 characters, maximum of 50 characters)
+          @json
+          @jsonTag password
+          @jsonExample senha1234
+          @binding required,min=5,max=50
+        example: senha1234
+        maxLength: 50
+        minLength: 5
+        type: string
+    required:
+    - age
+    - email
+    - name
+    - password
+    type: object
+  request.UserUpdateRequest:
+    properties:
+      age:
+        description: |-
+          User's age (omitempty, minimum of 18)
+          @json
+          @jsonTag age
+          @jsonExample 22
+          @binding omitempty,min=5
+        example: 22
+        minimum: 18
+        type: integer
+      name:
+        description: |-
+          User's name (omitempty, minimum of 5 characters, maximum of 50 characters)
+          Example: Victor Hugo
+          @json
+          @jsonTag name
+          @jsonExample Victor Hugo
+          @binding omitempty,min=5,max=50
+        example: Victor Hugo
+        maxLength: 50
+        minLength: 5
+        type: string
+    type: object
+  response.UserResponse:
+    properties:
+      age:
+        example: 22
+        type: integer
+      email:
+        example: email@gmail.com
+        type: string
+      id:
+        example: 6688570733fbe35fc2f33a15
+        type: string
+      name:
+        example: Larissa
+        type: string
+    type: object
+  rest_err.Causes:
+    properties:
+      field:
+        type: string
+      message:
+        type: string
+    type: object
+  rest_err.RestErr:
+    properties:
+      causes:
+        items:
+          $ref: '#/definitions/rest_err.Causes'
+        type: array
+      code:
+        type: integer
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for helping people with pix donations
+  title: API SOS-Service
+  version: "1.0"
+paths:
+  /createUser:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the provided user information
+      parameters:
+      - description: User information for registration
+        in: body
+        name: userRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Create a new user
+      tags:
+      - Users
+  /deleteUser/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a user based on the ID
+      parameters:
+      - description: ID of the user to be deleted
+        in: path
+        name: id
+        required: true
+        type: integer
+      - default: Bearer <token>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Delete User
+      tags:
+      - Users
+  /getUserByEmail/{email}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a user details based on user Email provided as parameter
+      parameters:
+      - description: Email of the user to be retrieved
+        in: path
+        name: email
+        required: true
+        type: string
+      - default: Bearer <token>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User information retrieved successfully
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "400":
+          description: 'Error: Invalid user email'
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Find User by Email
+      tags:
+      - Users
+  /getUserById/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a user details based on user ID provided as parameter
+      parameters:
+      - description: ID of the user to be retrieved
+        in: path
+        name: id
+        required: true
+        type: integer
+      - default: Bearer <token>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User information retrieved successfully
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "400":
+          description: 'Error: Invalid user id'
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Find User by ID
+      tags:
+      - Users
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Allows a user to log in and receive and authentication token
+      parameters:
+      - description: User login credentials
+        in: body
+        name: userLogin
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successfully, authentication token provided
+          headers:
+            Authorization:
+              description: Authentication token
+              type: string
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "403":
+          description: 'Error: invalid login credentials'
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: User Login
+      tags:
+      - Authentication
+  /updateUser:
+    put:
+      consumes:
+      - application/json
+      description: Updates user details based on the provided ID
+      parameters:
+      - description: ID of the user to be updated
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User information for update
+        in: body
+        name: userRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserUpdateRequest'
+      - default: Bearer <token>
+        description: Insert access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/rest_err.RestErr'
+      summary: Update User
+      tags:
+      - Users
+swagger: "2.0"
