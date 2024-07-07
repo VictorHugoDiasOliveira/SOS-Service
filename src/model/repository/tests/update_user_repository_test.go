@@ -1,17 +1,17 @@
-package repository
+package tests
 
 import (
 	"os"
 	"sosservice/src/model"
+	"sosservice/src/model/repository"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/integration/mtest"
 )
 
-func TestCreateUserRepository(t *testing.T) {
+func TestUpdateUserRepository(t *testing.T) {
 	database_name := "user_database_test"
 	collection_name := "user_collection_test"
 
@@ -25,7 +25,7 @@ func TestCreateUserRepository(t *testing.T) {
 	mtestDb := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	// defer mtestDb.Close()
 
-	mtestDb.Run("create user success", func(mt *mtest.T) {
+	mtestDb.Run("Successfully updated user by ID", func(mt *mtest.T) {
 		mt.AddMockResponses(bson.D{
 			{Key: "ok", Value: 1},
 			{Key: "n", Value: 1},
@@ -33,32 +33,25 @@ func TestCreateUserRepository(t *testing.T) {
 		})
 
 		databaseMock := mt.Client.Database(database_name)
+		repo := repository.NewUserRepository(databaseMock)
 
-		repo := NewUserRepository(databaseMock)
-
-		domain := model.NewUserDomain("victor@gmail.com", "senha123", "victor", 18)
-		userDomain, err := repo.CreateUser(domain)
-
-		_, errId := primitive.ObjectIDFromHex(userDomain.GetID())
+		domain := model.NewUserUpdateDomain("victor", 22)
+		err := repo.UpdateUser("6685ca7778824239f21f069d", domain)
 
 		assert.Nil(t, err)
-		assert.Nil(t, errId)
-		assert.EqualValues(t, userDomain.GetEmail(), domain.GetEmail())
 	})
 
-	mtestDb.Run("return error from database", func(mt *mtest.T) {
+	mtestDb.Run("Error trying to connect to database", func(mt *mtest.T) {
 		mt.AddMockResponses(bson.D{
 			{Key: "ok", Value: 0},
 		})
 
 		databaseMock := mt.Client.Database(database_name)
 
-		repo := NewUserRepository(databaseMock)
-
-		domain := model.NewUserDomain("victor@gmail.com", "senha123", "victor", 18)
-		userDomain, err := repo.CreateUser(domain)
+		repo := repository.NewUserRepository(databaseMock)
+		domain := model.NewUserUpdateDomain("victor", 18)
+		err := repo.UpdateUser("6685ca7778824239f21f069d", domain)
 
 		assert.NotNil(t, err)
-		assert.Nil(t, userDomain)
 	})
 }

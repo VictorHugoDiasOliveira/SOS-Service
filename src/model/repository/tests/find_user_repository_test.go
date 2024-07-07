@@ -1,8 +1,9 @@
-package repository
+package tests
 
 import (
 	"fmt"
 	"os"
+	"sosservice/src/model/repository"
 	"sosservice/src/model/repository/entity"
 	"testing"
 
@@ -26,7 +27,7 @@ func TestFindUserByEmailRepository(t *testing.T) {
 	mtestDb := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	// defer mtestDb.Close()
 
-	mtestDb.Run("valid email return success", func(mt *mtest.T) {
+	mtestDb.Run("Successfully found user by email", func(mt *mtest.T) {
 		userEntity := entity.UserEntity{
 			ID:       primitive.NewObjectID(),
 			Email:    "victor@gmail.com",
@@ -43,28 +44,32 @@ func TestFindUserByEmailRepository(t *testing.T) {
 
 		databaseMock := mt.Client.Database(database_name)
 
-		repo := NewUserRepository(databaseMock)
+		repo := repository.NewUserRepository(databaseMock)
 		userDomain, err := repo.FindUserByEmail(userEntity.Email)
 
 		assert.Nil(t, err)
 		assert.EqualValues(t, userDomain.GetID(), userEntity.ID.Hex())
+		assert.EqualValues(t, userDomain.GetEmail(), userEntity.Email)
+		assert.EqualValues(t, userDomain.GetPassword(), userEntity.Password)
+		assert.EqualValues(t, userDomain.GetName(), userEntity.Name)
+		assert.EqualValues(t, userDomain.GetAge(), userEntity.Age)
 	})
 
-	mtestDb.Run("mongodb return error", func(mt *mtest.T) {
+	mtestDb.Run("Error trying to connect to database", func(mt *mtest.T) {
 		mt.AddMockResponses(bson.D{
 			{Key: "ok", Value: 0},
 		})
 
 		databaseMock := mt.Client.Database(database_name)
 
-		repo := NewUserRepository(databaseMock)
+		repo := repository.NewUserRepository(databaseMock)
 		userDomain, err := repo.FindUserByEmail("victor@gmail.com")
 
 		assert.NotNil(t, err)
 		assert.Nil(t, userDomain)
 	})
 
-	mtestDb.Run("user not found", func(mt *mtest.T) {
+	mtestDb.Run("User not found", func(mt *mtest.T) {
 		mt.AddMockResponses(mtest.CreateCursorResponse(
 			0,
 			fmt.Sprintf("%s.%s", database_name, collection_name),
@@ -73,7 +78,7 @@ func TestFindUserByEmailRepository(t *testing.T) {
 
 		databaseMock := mt.Client.Database(database_name)
 
-		repo := NewUserRepository(databaseMock)
+		repo := repository.NewUserRepository(databaseMock)
 		userDomain, err := repo.FindUserByEmail("victor@gmail.com")
 
 		assert.NotNil(t, err)
@@ -95,7 +100,7 @@ func TestFindUserByIdRepository(t *testing.T) {
 	mtestDb := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	// defer mtestDb.Close()
 
-	mtestDb.Run("valid id return success", func(mt *mtest.T) {
+	mtestDb.Run("Successfully found user by ID", func(mt *mtest.T) {
 		userEntity := entity.UserEntity{
 			ID:       primitive.NewObjectID(),
 			Email:    "victor@gmail.com",
@@ -112,28 +117,32 @@ func TestFindUserByIdRepository(t *testing.T) {
 
 		databaseMock := mt.Client.Database(database_name)
 
-		repo := NewUserRepository(databaseMock)
+		repo := repository.NewUserRepository(databaseMock)
 		userDomain, err := repo.FindUserById(userEntity.ID.Hex())
 
 		assert.Nil(t, err)
 		assert.EqualValues(t, userDomain.GetID(), userEntity.ID.Hex())
+		assert.EqualValues(t, userDomain.GetEmail(), userEntity.Email)
+		assert.EqualValues(t, userDomain.GetPassword(), userEntity.Password)
+		assert.EqualValues(t, userDomain.GetName(), userEntity.Name)
+		assert.EqualValues(t, userDomain.GetAge(), userEntity.Age)
 	})
 
-	mtestDb.Run("mongodb return error", func(mt *mtest.T) {
+	mtestDb.Run("Error trying to connect to database", func(mt *mtest.T) {
 		mt.AddMockResponses(bson.D{
 			{Key: "ok", Value: 0},
 		})
 
 		databaseMock := mt.Client.Database(database_name)
 
-		repo := NewUserRepository(databaseMock)
+		repo := repository.NewUserRepository(databaseMock)
 		userDomain, err := repo.FindUserById("6685ca7778824239f21f069d")
 
 		assert.NotNil(t, err)
 		assert.Nil(t, userDomain)
 	})
 
-	mtestDb.Run("user not found", func(mt *mtest.T) {
+	mtestDb.Run("User not found", func(mt *mtest.T) {
 		mt.AddMockResponses(mtest.CreateCursorResponse(
 			0,
 			fmt.Sprintf("%s.%s", database_name, collection_name),
@@ -142,7 +151,7 @@ func TestFindUserByIdRepository(t *testing.T) {
 
 		databaseMock := mt.Client.Database(database_name)
 
-		repo := NewUserRepository(databaseMock)
+		repo := repository.NewUserRepository(databaseMock)
 		userDomain, err := repo.FindUserById("6685ca7778824239f21f069d")
 
 		assert.NotNil(t, err)
@@ -165,7 +174,7 @@ func TestFindUserByEmailAndPasswordRepository(t *testing.T) {
 	mtestDb := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	// defer mtestDb.Close()
 
-	mtestDb.Run("valid email and password return success", func(mt *mtest.T) {
+	mtestDb.Run("Successfully found user by email and password", func(mt *mtest.T) {
 		userEntity := entity.UserEntity{
 			ID:       primitive.NewObjectID(),
 			Email:    "victor@gmail.com",
@@ -182,28 +191,32 @@ func TestFindUserByEmailAndPasswordRepository(t *testing.T) {
 
 		databaseMock := mt.Client.Database(database_name)
 
-		repo := NewUserRepository(databaseMock)
+		repo := repository.NewUserRepository(databaseMock)
 		userDomain, err := repo.FindUserByEmailAndPassword(userEntity.Email, userEntity.Password)
 
 		assert.Nil(t, err)
 		assert.EqualValues(t, userDomain.GetID(), userEntity.ID.Hex())
+		assert.EqualValues(t, userDomain.GetEmail(), userEntity.Email)
+		assert.EqualValues(t, userDomain.GetPassword(), userEntity.Password)
+		assert.EqualValues(t, userDomain.GetName(), userEntity.Name)
+		assert.EqualValues(t, userDomain.GetAge(), userEntity.Age)
 	})
 
-	mtestDb.Run("mongodb return error", func(mt *mtest.T) {
+	mtestDb.Run("Error trying to connect to database", func(mt *mtest.T) {
 		mt.AddMockResponses(bson.D{
 			{Key: "ok", Value: 0},
 		})
 
 		databaseMock := mt.Client.Database(database_name)
 
-		repo := NewUserRepository(databaseMock)
+		repo := repository.NewUserRepository(databaseMock)
 		userDomain, err := repo.FindUserByEmailAndPassword("victor@gmail.com", "senha1234")
 
 		assert.NotNil(t, err)
 		assert.Nil(t, userDomain)
 	})
 
-	mtestDb.Run("user not found", func(mt *mtest.T) {
+	mtestDb.Run("User not found", func(mt *mtest.T) {
 		mt.AddMockResponses(mtest.CreateCursorResponse(
 			0,
 			fmt.Sprintf("%s.%s", database_name, collection_name),
@@ -212,7 +225,7 @@ func TestFindUserByEmailAndPasswordRepository(t *testing.T) {
 
 		databaseMock := mt.Client.Database(database_name)
 
-		repo := NewUserRepository(databaseMock)
+		repo := repository.NewUserRepository(databaseMock)
 		userDomain, err := repo.FindUserByEmailAndPassword("victor@gmail.com", "senha1234")
 
 		assert.NotNil(t, err)
