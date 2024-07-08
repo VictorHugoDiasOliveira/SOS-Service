@@ -1,6 +1,6 @@
 # SOS Service
 
-Back-end for SOS Website (Studing purpose).
+Project created with the purpose of receiving registrations for direct donations to people via PIX who have been affected by a natural disaster, such as the flood that occurred in Rio Grande do Sul this year (2024)
 
 - Underdevelopment
 
