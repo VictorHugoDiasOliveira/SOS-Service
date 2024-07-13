@@ -25,4 +25,4 @@ jobs:
       run: GOOS=linux GOARCH=amd64 go build -o sos-service .
 
     - name: Test
-      run: go test -v src/model/repository/tests
+      run: go test
