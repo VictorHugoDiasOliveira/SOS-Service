@@ -24,7 +24,7 @@ func TestCreateUserRepository(t *testing.T) {
 	defer os.Clearenv()
 
 	mtestDb := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
-	// defer mtestDb.Close()
+	// defer mtestDb.Close() //testing
 
 	mtestDb.Run("Success creating an user", func(mt *mtest.T) {
 		mt.AddMockResponses(bson.D{
