@@ -10,8 +10,7 @@ COPY init_dependencies.go init_dependencies.go
 COPY main.go main.go
 RUN go mod download
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on \
-GOOS=linux go build -o sos-service .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -o sos-service .
 
 
 FROM golang:1.22.4 AS runner
